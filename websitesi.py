@@ -279,8 +279,16 @@ if st.session_state.page == "home":
 elif st.session_state.page == "team":
     st.markdown("## 👥 Research Team")
     
-    col1, col2, col3 = st.columns(3)
+    col0, col1, col2, col3 = st.columns(3)
     
+    with col0:
+        st.markdown("""
+        <div class="team-card">
+            <h3>👩‍💻 Prof. Dr. Nazlı İkizler Cinbiş</h3>
+            <p>Project Advisor</p>
+        </div>
+        """, unsafe_allow_html=True)
+
     with col1:
         st.markdown("""
         <div class="team-card">
