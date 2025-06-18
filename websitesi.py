@@ -812,38 +812,38 @@ elif st.session_state.page == "comparisons":
             """, unsafe_allow_html=True)
     
     
-    # Simulate frame-by-frame detection
-    frames = np.arange(1, 31)
-    base_confidence = predicted_confidence
-    noise = np.random.normal(0, 0.05, 30)
-    confidence_over_time = np.clip(base_confidence + noise, 0.3, 0.99)
+        # Simulate frame-by-frame detection
+        frames = np.arange(1, 31)
+        base_confidence = predicted_confidence
+        noise = np.random.normal(0, 0.05, 30)
+        confidence_over_time = np.clip(base_confidence + noise, 0.3, 0.99)
     
-    fig_confidence = go.Figure()
-    fig_confidence.add_trace(go.Scatter(
-        x=frames,
-        y=confidence_over_time,
-        mode='lines+markers',
-        name='Detection Confidence',
-        line=dict(color='#4CAF50', width=3),
-        marker=dict(size=6)
-    ))
+        fig_confidence = go.Figure()
+        fig_confidence.add_trace(go.Scatter(
+            x=frames,
+            y=confidence_over_time,
+            mode='lines+markers',
+            name='Detection Confidence',
+            line=dict(color='#4CAF50', width=3),
+            marker=dict(size=6)
+        ))
     
-    fig_confidence.add_hline(
-        y=0.5, 
-        line_dash="dash", 
-        line_color="red",
-        annotation_text="Decision Threshold"
-    )
+        fig_confidence.add_hline(
+            y=0.5, 
+            line_dash="dash", 
+            line_color="red",
+            annotation_text="Decision Threshold"
+        )
     
-    fig_confidence.update_layout(
-        title="Frame-by-Frame Detection Confidence",
-        xaxis_title="Frame Number",
-        yaxis_title="Detection Confidence",
-        height=400,
-        yaxis=dict(range=[0, 1])
-    )
+        fig_confidence.update_layout(
+            title="Frame-by-Frame Detection Confidence",
+            xaxis_title="Frame Number",
+            yaxis_title="Detection Confidence",
+            height=400,
+            yaxis=dict(range=[0, 1])
+        )
     
-    st.plotly_chart(fig_confidence, use_container_width=True)
+        st.plotly_chart(fig_confidence, use_container_width=True)
     
     # Analysis explanation
     st.markdown("### 📊 Analysis Explanation")
