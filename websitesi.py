@@ -224,7 +224,7 @@ if st.session_state.page == "home":
     with col1:
         st.markdown("""
         <div class="metric-card">
-            <h3>🏆 Best Same-Dataset</h3>
+            <h3>🏆 Same-Dataset</h3>
             <h2>XceptionNet</h2>
             <p>AUC: 0.9880</p>
         </div>
@@ -233,7 +233,7 @@ if st.session_state.page == "home":
     with col2:
         st.markdown("""
         <div class="metric-card">
-            <h3>🌐 Best Cross-Dataset</h3>
+            <h3>🏆 Cross-Dataset</h3>
             <h2>Swin-S</h2>
             <p>AUC: 0.8533</p>
         </div>
