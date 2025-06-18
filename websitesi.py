@@ -692,7 +692,7 @@ elif st.session_state.page == "results":
         ))
     
         fig_scatter.update_layout(
-            xaxis_title='Training Runtime (minutes)',
+            xaxis_title='Inference Runtime (minutes)',
             yaxis_title='Best AUC Score',
             height=400,
             showlegend=False
