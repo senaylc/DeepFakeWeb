@@ -1086,12 +1086,15 @@ elif st.session_state.page == "demo":
         </ul>
         </div>
         """, unsafe_allow_html=True)
+
+        st.markdown("""
+    <a href="https://drive.google.com/file/d/1MoqXYSs4OjhdZgXk2_03t_qYQx0FxBEo/view?usp=sharing" target="_blank">
+        <button style="background-color:#002855; color:white; padding:0.5em 1em; border:none; border-radius:8px; font-weight:bold;">
+            📺 Here is our video!
+        </button>
+    </a>
+""", unsafe_allow_html=True)
         
-        # Placeholder for video
-        st.info("📺 Video will be embedded here - provide YouTube link or upload to display")
-        
-        # You can add the actual video when you have the link
-        # st.video("YOUR_YOUTUBE_LINK_HERE")
     
     with col2:
         st.markdown("### 🖼️ Project Poster")
@@ -1185,8 +1188,8 @@ elif st.session_state.page == "resources":
     </div>
     """, unsafe_allow_html=True)
         
-    st.info("🔗 GitHub repository link will be added here")
-    # st.markdown("[🔗 View on GitHub](YOUR_GITHUB_REPO_LINK)")
+    
+    st.markdown("[🔗 View on GitHub](https://github.com/b2220765049/DeepFakeProject)")
     
     
     st.markdown("### 📚 Technical Documentation")
