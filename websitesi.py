@@ -991,7 +991,13 @@ elif st.session_state.page == "demo":
         </div>
         """, unsafe_allow_html=True)
         
-        st.info("📄 Poster PDF will be displayed here - upload poster.pdf to show")
+        st.markdown("""
+    <a href="https://github.com/senaylc/DeepFakeWeb/blob/master/final-poster.pdf" target="_blank">
+        <button style="background-color:#002855; color:white; padding:0.5em 1em; border:none; border-radius:8px; font-weight:bold;">
+            📄 Here is our poster!
+        </button>
+    </a>
+""", unsafe_allow_html=True)
         
     
     st.markdown("### 🔗 Interactive Application")
