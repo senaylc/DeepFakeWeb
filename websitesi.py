@@ -279,7 +279,7 @@ if st.session_state.page == "home":
 elif st.session_state.page == "team":
     st.markdown("## 👥 Research Team")
     
-    col0, col1, col2, col3 = st.columns(3)
+    col0, col1, col2, col3 = st.columns(4)
     
     with col0:
         st.markdown("""
