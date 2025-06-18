@@ -1070,14 +1070,8 @@ elif st.session_state.page == "comparisons":
         """)
 
 elif st.session_state.page == "demo":
-    st.markdown("## 🎥 Interactive Demo")
+    st.markdown("## 🎥 Demo")
     
-    st.markdown("""
-    <div class="highlight-box">
-    <h3>🔍 DeepFake Detection Simulator</h3>
-    <p>Explore how different models would perform on various types of content and conditions.</p>
-    </div>
-    """, unsafe_allow_html=True)
     col1, col2 = st.columns(2)
     
     with col1:
@@ -1132,31 +1126,22 @@ elif st.session_state.page == "demo":
     st.markdown("""
     <div class="highlight-box">
     <h4>🚀 Try Our DeepFake Detection System</h4>
-    <p>Experience our trained models in action with our interactive web application:</p>
+    <p>Experience detecting deepfakes in action with our interactive web application:</p>
     </div>
     """, unsafe_allow_html=True)
     
-    col1, col2, col3 = st.columns(3)
+    col1, col2 = st.columns(2)
     
     with col1:
         st.markdown("""
         **🎯Features:**
         - Upload video analysis
-        - Real-time detection
-        - Model comparison
+        - Fast detection
         - Confidence scoring
         """)
+
     
     with col2:
-        st.markdown("""
-        **🧠 Models Available:**
-        - Swin-S (Best AUC)
-        - XceptionNet
-        - EfficientNet
-        - Hybrid ensemble
-        """)
-    
-    with col3:
         st.markdown("""
         **📊 Outputs:**
         - Detection probability
