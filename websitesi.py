@@ -284,7 +284,7 @@ elif st.session_state.page == "team":
     with col0:
         st.markdown("""
         <div class="team-card">
-            <h3>👩‍💻 Prof. Dr. Nazlı İkizler Cinbiş</h3>
+            <h3>Prof. Nazlı İkizler Cinbiş</h3>
             <p>Project Advisor</p>
         </div>
         """, unsafe_allow_html=True)
@@ -301,7 +301,7 @@ elif st.session_state.page == "team":
     with col2:
         st.markdown("""
         <div class="team-card">
-            <h3>👩‍💻 İlayda Zeynep Karakaş</h3>
+            <h3>👩‍💻 İ. Zeynep Karakaş</h3>
             <p><strong>Student ID:</strong> 2200765027</p>
             <p>Computer/AI Engineering</p>
         </div>
