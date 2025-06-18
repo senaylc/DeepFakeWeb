@@ -658,7 +658,6 @@ elif st.session_state.page == "results":
             robustness_data.append({
                 'Model': model,
                 'Avg AUC': f"{avg_robust:.4f}",
-                'Retention': f"{retention:.1f}%",
                 'Runtime': f"{pert_df.iloc[i]['Runtime_min']:.1f}m"
             })
     
@@ -700,54 +699,7 @@ elif st.session_state.page == "results":
     
         st.plotly_chart(fig_scatter, use_container_width=True)
 
-    # Detailed perturbation impact heatmap
-    st.markdown("#### 🌡️ Perturbation Impact Heatmap")
 
-    # Create heatmap data
-    perturbation_cols = [
-        'Downsample_200', 'Downsample_168', 'Downsample_112',
-        'Blur_0.2', 'Blur_0.5', 'Blur_2.0',
-        'Sharpen_0.2', 'Sharpen_0.5', 'Sharpen_2.0',
-        'SaltPepper_0.001', 'SaltPepper_0.01', 'SaltPepper_0.03'
-    ]
-
-    # Calculate performance retention for heatmap
-    heatmap_data = []
-    for col in perturbation_cols:
-        retention_row = []
-        for i in range(len(pert_df)):
-            retention = (pert_df.iloc[i][col] / pert_df.iloc[i]['Original']) * 100
-            retention_row.append(retention)
-        heatmap_data.append(retention_row)
-
-    # Clean labels for heatmap
-    clean_labels = [
-        'Down 200px', 'Down 168px', 'Down 112px',
-        'Blur σ=0.2', 'Blur σ=0.5', 'Blur σ=2.0',
-        'Sharp σ=0.2', 'Sharp σ=0.5', 'Sharp σ=2.0',
-        'S&P 0.001', 'S&P 0.01', 'S&P 0.03'
-    ]
-
-    fig_heatmap = go.Figure(data=go.Heatmap(
-        z=heatmap_data,
-        x=pert_df['Model'],
-        y=clean_labels,
-        colorscale='RdYlGn',
-        zmid=95,  # Center at 95% retention
-        colorbar=dict(title="Performance Retention (%)"),
-        text=np.round(heatmap_data, 1),
-        texttemplate="%{text}%",
-        textfont={"size": 10}
-    ))
-
-    fig_heatmap.update_layout(
-        title='Performance Retention Across All Perturbations',
-        xaxis_title='Model Architecture',
-        yaxis_title='Perturbation Type',
-        height=600
-    )
-
-    st.plotly_chart(fig_heatmap, use_container_width=True)
 
     # Key insights based on actual data
     st.markdown("""
