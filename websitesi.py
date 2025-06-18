@@ -496,75 +496,185 @@ elif st.session_state.page == "results":
     # Robustness Analysis
     st.markdown("### 🔍 Robustness Analysis")
 
-    # Extended perturbation data with runtime info
-    perturbation_data_extended = {
-        'Model': ['ResNet-50', 'DenseNet-121', 'EfficientNet-B0', 'ViT-16', 'Swin-S', 'ConvNeXt-S'],
-        'Original': [0.892, 0.885, 0.901, 0.914, 0.908, 0.905],
-        'Downsample_200': [0.821, 0.815, 0.834, 0.876, 0.871, 0.867],
-        'Blur_0.5': [0.834, 0.827, 0.845, 0.881, 0.875, 0.872],
-        'Sharpen_0.5': [0.887, 0.880, 0.896, 0.909, 0.903, 0.900],
-        'Noise_0.1': [0.864, 0.857, 0.873, 0.891, 0.885, 0.882],
-        'Rotation_15': [0.875, 0.868, 0.884, 0.897, 0.891, 0.888],
-        'Runtime_min': [11.48, 14.2, 12.5, 25.33, 24.08, 22.35]
+    # Real perturbation data from your tables
+    perturbation_data = {
+        'Model': ['Slow-R50', 'ViT-16', 'Swin-S', 'ConvNeXt-S'],
+        # Original performance (baseline - using best performance from tables as reference)
+        'Original': [0.5674, 0.6738, 0.6803, 0.6939],
+        # Downsample perturbations (using 200 size as primary)
+        'Downsample_200': [0.5656, 0.6623, 0.6294, 0.6374],
+        'Downsample_168': [0.5661, 0.6434, 0.5756, 0.5849],
+        'Downsample_112': [0.5637, 0.5673, 0.5598, 0.5639],
+        # Blur perturbations
+        'Blur_0.2': [0.5667, 0.6508, 0.6803, 0.6811],
+        'Blur_0.5': [0.5668, 0.6669, 0.6784, 0.6715],
+        'Blur_2.0': [0.5547, 0.5585, 0.5401, 0.5371],
+        # Sharpen perturbations
+        'Sharpen_0.2': [0.5673, 0.6738, 0.6602, 0.6858],
+        'Sharpen_0.5': [0.5674, 0.6728, 0.6742, 0.6939],
+        'Sharpen_2.0': [0.5610, 0.6195, 0.6604, 0.6468],
+        # Salt & Pepper noise perturbations
+        'SaltPepper_0.001': [0.5642, 0.6374, 0.6647, 0.6773],
+        'SaltPepper_0.01': [0.5545, 0.6000, 0.6083, 0.6406],
+        'SaltPepper_0.03': [0.5494, 0.5726, 0.5600, 0.6018],
+        # Runtime data (converted to minutes)
+        'Runtime_min': [11.48, 25.33, 24.08, 22.35]
     }
 
-    pert_df = pd.DataFrame(perturbation_data_extended)
+    pert_df = pd.DataFrame(perturbation_data)
 
-    # Main perturbation chart
-    fig_pert = go.Figure()
-    perturbations = ['Downsample_200', 'Blur_0.5', 'Sharpen_0.5', 'Noise_0.1', 'Rotation_15']
-    colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7']
+    # Create tabs for different perturbation types
+    tab1, tab2, tab3, tab4 = st.tabs(["📐 Downsample", "🌫️ Blur", "✨ Sharpen", "🔘 Salt & Pepper"])
 
-    for i, column in enumerate(perturbations):
-        fig_pert.add_trace(go.Bar(
-            name=column.replace('_', ' ').title(),
-            x=pert_df['Model'],
-            y=pert_df[column],
-            text=pert_df[column].round(3),
-            textposition='auto',
-            marker_color=colors[i]
-        ))
+    with tab1:
+        st.markdown("#### Downsample-Upsample Robustness")
+        fig_downsample = go.Figure()
+        downsample_cols = ['Downsample_200', 'Downsample_168', 'Downsample_112']
+        colors_down = ['#FF6B6B', '#FF8E8E', '#FFB1B1']
+    
+        for i, column in enumerate(downsample_cols):
+            size = column.split('_')[1]
+            fig_downsample.add_trace(go.Bar(
+                name=f'Size {size}px',
+                x=pert_df['Model'],
+                y=pert_df[column],
+                text=pert_df[column].round(4),
+                textposition='auto',
+                marker_color=colors_down[i]
+            ))
+    
+        fig_downsample.update_layout(
+            title='Model Performance Under Different Downsample Sizes',
+            xaxis_title='Model Architecture',
+            yaxis_title='AUC Score',
+            barmode='group',
+            height=500,
+            yaxis=dict(range=[0.5, 0.75])
+        )
+        st.plotly_chart(fig_downsample, use_container_width=True)
 
-    fig_pert.update_layout(
-        title='Model Robustness Under Different Perturbations',
-        xaxis_title='Model Architecture',
-        yaxis_title='AUC Score',
-        barmode='group',
-        height=500,
-        yaxis=dict(range=[0.7, 1.0])
-    )
+    with tab2:
+        st.markdown("#### Blur Robustness")
+        fig_blur = go.Figure()
+        blur_cols = ['Blur_0.2', 'Blur_0.5', 'Blur_2.0']
+        colors_blur = ['#4ECDC4', '#5ED3D3', '#6EEAEA']
+    
+        for i, column in enumerate(blur_cols):
+            sigma = column.split('_')[1]
+            fig_blur.add_trace(go.Bar(
+                name=f'Sigma {sigma}',
+                x=pert_df['Model'],
+                y=pert_df[column],
+                text=pert_df[column].round(4),
+                textposition='auto',
+                marker_color=colors_blur[i]
+            ))
+    
+        fig_blur.update_layout(
+            title='Model Performance Under Different Blur Levels',
+            xaxis_title='Model Architecture',
+            yaxis_title='AUC Score',
+            barmode='group',
+            height=500,
+            yaxis=dict(range=[0.5, 0.75])
+        )
+        st.plotly_chart(fig_blur, use_container_width=True)
 
-    st.plotly_chart(fig_pert, use_container_width=True)
+    with tab3:
+        st.markdown("#### Sharpen Robustness")
+        fig_sharpen = go.Figure()
+        sharpen_cols = ['Sharpen_0.2', 'Sharpen_0.5', 'Sharpen_2.0']
+        colors_sharpen = ['#45B7D1', '#67C7E8', '#89D7EF']
+    
+        for i, column in enumerate(sharpen_cols):
+            sigma = column.split('_')[1]
+            fig_sharpen.add_trace(go.Bar(
+                name=f'Sigma {sigma}',
+                x=pert_df['Model'],
+                y=pert_df[column],
+                text=pert_df[column].round(4),
+                textposition='auto',
+                marker_color=colors_sharpen[i]
+            ))
+    
+        fig_sharpen.update_layout(
+            title='Model Performance Under Different Sharpen Levels',
+            xaxis_title='Model Architecture',
+            yaxis_title='AUC Score',
+            barmode='group',
+            height=500,
+            yaxis=dict(range=[0.5, 0.75])
+        )
+        st.plotly_chart(fig_sharpen, use_container_width=True)
 
-    # Robustness comparison table
+    with tab4:
+        st.markdown("#### Salt & Pepper Noise Robustness")
+        fig_noise = go.Figure()
+        noise_cols = ['SaltPepper_0.001', 'SaltPepper_0.01', 'SaltPepper_0.03']
+        colors_noise = ['#96CEB4', '#A8D6C4', '#BADED4']
+    
+        for i, column in enumerate(noise_cols):
+            prob = column.split('_')[1]
+            fig_noise.add_trace(go.Bar(
+                name=f'Prob {prob}',
+                x=pert_df['Model'],
+                y=pert_df[column],
+                text=pert_df[column].round(4),
+                textposition='auto',
+                marker_color=colors_noise[i]
+            ))
+    
+        fig_noise.update_layout(
+            title='Model Performance Under Different Salt & Pepper Noise Levels',
+            xaxis_title='Model Architecture',
+            yaxis_title='AUC Score',
+            barmode='group',
+            height=500,
+            yaxis=dict(range=[0.5, 0.75])
+        )
+        st.plotly_chart(fig_noise, use_container_width=True)
+
+    # Overall robustness analysis
+    st.markdown("#### 📊 Overall Robustness Summary")
+
     col1, col2 = st.columns(2)
 
     with col1:
-        # Performance retention table
-        st.markdown("#### Performance Retention (%)")
-        retention_data = []
+        # Calculate average robustness across all perturbations
+        st.markdown("#### Robustness Rankings")
+        robustness_data = []
+    
         for i, model in enumerate(pert_df['Model']):
-            original = pert_df.iloc[i]['Original']
-            avg_retention = np.mean([
-                pert_df.iloc[i]['Downsample_200']/original,
-                pert_df.iloc[i]['Blur_0.5']/original,
-                pert_df.iloc[i]['Noise_0.1']/original
-            ]) * 100
+            # Calculate average performance across moderate perturbations
+            moderate_perturbs = [
+                pert_df.iloc[i]['Downsample_200'],
+                pert_df.iloc[i]['Blur_0.5'],
+                pert_df.iloc[i]['Sharpen_0.5'],
+                pert_df.iloc[i]['SaltPepper_0.01']
+            ]
+            avg_robust = np.mean(moderate_perturbs)
+            retention = (avg_robust / pert_df.iloc[i]['Original']) * 100
         
-            retention_data.append({
+            robustness_data.append({
                 'Model': model,
-                'Avg Retention': f"{avg_retention:.1f}%",
+                'Avg AUC': f"{avg_robust:.4f}",
+                'Retention': f"{retention:.1f}%",
                 'Runtime': f"{pert_df.iloc[i]['Runtime_min']:.1f}m"
             })
     
-        retention_df = pd.DataFrame(retention_data)
-        st.dataframe(retention_df, use_container_width=True)
+        robust_df = pd.DataFrame(robustness_data)
+        # Sort by average AUC
+        robust_df['Avg_AUC_float'] = robust_df['Avg AUC'].str.replace('f', '').astype(float)
+        robust_df = robust_df.sort_values('Avg_AUC_float', ascending=False).drop('Avg_AUC_float', axis=1)
+    
+        st.dataframe(robust_df, use_container_width=True)
 
     with col2:
         # Performance vs Runtime scatter plot
-        st.markdown("#### Performance vs Runtime")
+        st.markdown("#### Performance vs Runtime Trade-off")
         fig_scatter = go.Figure()
     
+        # Use original performance for scatter plot
         fig_scatter.add_trace(go.Scatter(
             x=pert_df['Runtime_min'],
             y=pert_df['Original'],
@@ -578,31 +688,86 @@ elif st.session_state.page == "results":
                 showscale=True,
                 colorbar=dict(title="AUC Score")
             ),
-            hovertemplate='<b>%{text}</b><br>Runtime: %{x:.1f}m<br>AUC: %{y:.3f}<extra></extra>'
+            hovertemplate='<b>%{text}</b><br>Runtime: %{x:.1f}m<br>AUC: %{y:.4f}<extra></extra>'
         ))
     
         fig_scatter.update_layout(
             xaxis_title='Training Runtime (minutes)',
-            yaxis_title='AUC Score',
+            yaxis_title='Best AUC Score',
             height=400,
             showlegend=False
         )
     
         st.plotly_chart(fig_scatter, use_container_width=True)
 
-    # Key insights
+    # Detailed perturbation impact heatmap
+    st.markdown("#### 🌡️ Perturbation Impact Heatmap")
+
+    # Create heatmap data
+    perturbation_cols = [
+        'Downsample_200', 'Downsample_168', 'Downsample_112',
+        'Blur_0.2', 'Blur_0.5', 'Blur_2.0',
+        'Sharpen_0.2', 'Sharpen_0.5', 'Sharpen_2.0',
+        'SaltPepper_0.001', 'SaltPepper_0.01', 'SaltPepper_0.03'
+    ]
+
+    # Calculate performance retention for heatmap
+    heatmap_data = []
+    for col in perturbation_cols:
+        retention_row = []
+        for i in range(len(pert_df)):
+            retention = (pert_df.iloc[i][col] / pert_df.iloc[i]['Original']) * 100
+            retention_row.append(retention)
+        heatmap_data.append(retention_row)
+
+    # Clean labels for heatmap
+    clean_labels = [
+        'Down 200px', 'Down 168px', 'Down 112px',
+        'Blur σ=0.2', 'Blur σ=0.5', 'Blur σ=2.0',
+        'Sharp σ=0.2', 'Sharp σ=0.5', 'Sharp σ=2.0',
+        'S&P 0.001', 'S&P 0.01', 'S&P 0.03'
+    ]
+
+    fig_heatmap = go.Figure(data=go.Heatmap(
+        z=heatmap_data,
+        x=pert_df['Model'],
+        y=clean_labels,
+        colorscale='RdYlGn',
+        zmid=95,  # Center at 95% retention
+        colorbar=dict(title="Performance Retention (%)"),
+        text=np.round(heatmap_data, 1),
+        texttemplate="%{text}%",
+        textfont={"size": 10}
+    ))
+
+    fig_heatmap.update_layout(
+        title='Performance Retention Across All Perturbations',
+        xaxis_title='Model Architecture',
+        yaxis_title='Perturbation Type',
+        height=600
+    )
+
+    st.plotly_chart(fig_heatmap, use_container_width=True)
+
+    # Key insights based on actual data
     st.markdown("""
     <div class="highlight-box">
-    <h4>🔬 Key Robustness Insights</h4>
+    <h4>🔬 Key Robustness Insights from Analysis</h4>
     <ul>
-        <li><strong>Vision Transformers (ViT-16, Swin-S)</strong> show superior robustness but require 2x training time</li>
-        <li><strong>ResNet-50</strong> offers best speed-performance trade-off (11.5m runtime, 89.2% AUC)</li>
-        <li><strong>ConvNeXt-S</strong> provides modern CNN performance with reasonable training time (22.4m)</li>
-        <li><strong>Runtime Impact:</strong> Transformers 22-25m vs CNNs 11-15m training time</li>
-        <li><strong>Clinical Recommendation:</strong> ViT-16 for maximum accuracy, ResNet-50 for fast deployment</li>
+        <li><strong>ConvNeXt-S</strong> shows the best overall performance (0.6939 AUC) with good robustness across perturbations</li>
+        <li><strong>Swin-S</strong> demonstrates excellent blur robustness, maintaining performance even at σ=0.5 blur</li>
+        <li><strong>ViT-16</strong> shows strong sharpen robustness but is more sensitive to salt & pepper noise</li>
+        <li><strong>Slow-R50</strong> offers fastest training (11.5m) but significantly lower performance across all metrics</li>
+        <li><strong>Severe perturbations</strong> (Downsample to 112px, Blur σ=2.0, S&P 0.03) cause major performance drops for all models</li>
+        <li><strong>Clinical Recommendation:</strong> ConvNeXt-S for best accuracy-robustness balance, Slow-R50 only for rapid prototyping</li>
     </ul>
     </div>
     """, unsafe_allow_html=True)
+
+
+
+
+
 
 elif st.session_state.page == "comparisons":
     st.markdown("## 📈 Comprehensive Model Comparisons")
